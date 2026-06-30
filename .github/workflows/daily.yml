@@ -1,0 +1,44 @@
+name: Daily Info Radar
+
+# 每天自动重跑信息雷达，提交更新后的网页 + 日报；GitHub Pages 随之刷新。
+# 与原项目 agents-radar 一致：00:00 UTC = 08:00 CST。
+# 零 secret 即可工作；若在仓库 Settings 里配了 LLM key，会自动用 AI 写推荐理由。
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-radar
+  cancel-in-progress: false
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run radar
+        env:
+          LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
+        run: node radar.mjs
+
+      - name: Commit updated page + digest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html digests
+          git diff --staged --quiet || git commit -m "chore: daily radar $(date -u +%F) [skip ci]"
+          git push
