@@ -324,7 +324,7 @@ h1{font-size:24px;margin:0 0 6px}.sub{color:var(--mut);font-size:13px;margin-bot
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0;transition:.15s}
 .card:hover{border-color:var(--acc)}
 .rank{display:inline-block;min-width:26px;height:26px;line-height:26px;text-align:center;border-radius:7px;background:var(--gold);color:#000;font-weight:700;margin-right:8px}
-.ttl{font-size:17px;font-weight:600;text-decoration:none;color:var(--fg)}.ttl:hover{color:var(--acc)}
+.ttl{font-size:17px;font-weight:600;text-decoration:none;color:var(--fg);overflow-wrap:anywhere}.ttl:hover{color:var(--acc)}
 .badge{font-size:11px;color:var(--acc);border:1px solid var(--acc);border-radius:5px;padding:1px 6px;margin-left:6px;opacity:.85}
 .note{color:var(--mut);font-size:13px;margin:6px 0}
 .reason{margin:8px 0;font-size:14px}.reason b{color:var(--gold)}
@@ -332,7 +332,7 @@ h1{font-size:24px;margin:0 0 6px}.sub{color:var(--mut);font-size:13px;margin-bot
 .bar>i{display:block;height:100%;background:linear-gradient(90deg,#58a6ff,#e3b341)}
 .meta{color:var(--mut);font-size:12px}
 details{margin-top:28px}summary{cursor:pointer;color:var(--mut)}
-.row{padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}.row a{color:var(--fg);text-decoration:none}.row a:hover{color:var(--acc)}
+.row{padding:6px 0;border-bottom:1px solid var(--line);font-size:13px;overflow-wrap:anywhere}.row a{color:var(--fg);text-decoration:none}.row a:hover{color:var(--acc)}
 .foot{margin-top:40px;color:var(--mut);font-size:12px;text-align:center}
 .foot a{color:var(--acc)}
 </style></head><body><div class="wrap">
@@ -340,18 +340,18 @@ details{margin-top:28px}summary{cursor:pointer;color:var(--mut)}
 <div class="sub" id="sub"></div>
 <div id="top"></div>
 <details><summary id="more"></summary><div id="all"></div></details>
-<div class="foot">信息雷达 mini · 复刻自 <a href="https://github.com/duanyytop/agents-radar" target="_blank">agents-radar</a> 的核心体验</div>
+<div class="foot">信息雷达 mini · 复刻自 <a href="https://github.com/duanyytop/agents-radar" target="_blank" rel="noopener noreferrer">agents-radar</a> 的核心体验</div>
 </div>
 <script>
 const D=${data};
 document.getElementById('d').textContent=D.date;
 document.getElementById('sub').innerHTML=
  '抓取 <b>'+D.stats.raw+'</b> 条 → 去重 <b>'+D.stats.dedup+'</b> 条（合并 '+D.stats.merged+' 组）→ 打分 → Top '+D.top.length+
- '　·　4 源全免密钥　·　推荐理由：'+D.stats.via;
-const maxS=Math.max.apply(null,D.top.map(t=>t.score))||1;
+ '　·　4 源全免密钥　·　推荐理由：'+esc(D.stats.via);
+const maxS=D.top.length?Math.max.apply(null,D.top.map(t=>t.score)):1;
 document.getElementById('top').innerHTML=D.top.map((it,i)=>
  '<div class="card"><div><span class="rank">'+(i+1)+'</span>'+
- '<a class="ttl" href="'+it.url+'" target="_blank">'+esc(it.title)+'</a>'+
+ '<a class="ttl" href="'+esc(it.url)+'" target="_blank" rel="noopener noreferrer">'+esc(it.title)+'</a>'+
  it.sources.map(x=>'<span class="badge">'+x+'</span>').join('')+'</div>'+
  (it.note?'<div class="note">'+esc(it.note)+'</div>':'')+
  '<div class="reason">💡 <b>'+esc(it.reason||'')+'</b></div>'+
@@ -360,7 +360,7 @@ document.getElementById('top').innerHTML=D.top.map((it,i)=>
  '</div>').join('');
 document.getElementById('more').textContent='📋 完整候选池（'+D.all.length+' 条）';
 document.getElementById('all').innerHTML=D.all.map((it,i)=>
- '<div class="row">'+(i+1)+'. <a href="'+it.url+'" target="_blank">'+esc(it.title)+'</a> '+
+ '<div class="row">'+(i+1)+'. <a href="'+esc(it.url)+'" target="_blank" rel="noopener noreferrer">'+esc(it.title)+'</a> '+
  '<span class="badge">'+it.sources.join('+')+'</span> — '+it.score.toFixed(0)+' 分</div>').join('');
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 </script></body></html>`;
